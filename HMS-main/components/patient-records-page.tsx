@@ -1,10 +1,42 @@
+"use client"
+
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Search, Filter, Plus, FileText, Pill, FlaskRoundIcon as Flask } from "lucide-react"
+import { useState, useEffect } from "react"
+import type { PatientRecord } from "../types/patients"
+import { generateSamplePatients } from "../lib/patients-data"
 
 export function PatientRecordsPage() {
+  const router = useRouter()
+  const [searchQuery, setSearchQuery] = useState("")
+  const [patients, setPatients] = useState<PatientRecord[]>([])
+
+  // Load sample patients
+  useEffect(() => {
+    setPatients(generateSamplePatients())
+  }, [])
+
+  // Handle search
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      router.push(`/patients/search?query=${encodeURIComponent(searchQuery)}`)
+    }
+  }
+
+  // Handle advanced search
+  const handleAdvancedSearch = () => {
+    router.push("/patients/search")
+  }
+
+  // Handle view patient
+  const handleViewPatient = (patientId: string) => {
+    router.push(`/patients/${patientId}`)
+  }
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
@@ -17,11 +49,23 @@ export function PatientRecordsPage() {
       <div className="flex flex-col gap-4 md:flex-row md:items-center">
         <div className="relative flex-1">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input type="search" placeholder="Search patients..." className="w-full pl-8" />
+          <Input
+            type="search"
+            placeholder="Search patients..."
+            className="w-full pl-8"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+          />
         </div>
-        <Button variant="outline" className="flex gap-2">
-          <Filter className="h-4 w-4" /> Filters
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" className="flex gap-2" onClick={handleAdvancedSearch}>
+            <Filter className="h-4 w-4" /> Advanced Search
+          </Button>
+          <Button variant="outline" onClick={handleSearch}>
+            Search
+          </Button>
+        </div>
       </div>
 
       <Tabs defaultValue="all" className="space-y-4">
@@ -33,14 +77,7 @@ export function PatientRecordsPage() {
         </TabsList>
         <TabsContent value="all" className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {[
-              { id: "P-1001", name: "John Smith", age: 45, gender: "Male", condition: "Hypertension" },
-              { id: "P-1002", name: "Emily Johnson", age: 32, gender: "Female", condition: "Pregnancy" },
-              { id: "P-1003", name: "Michael Brown", age: 58, gender: "Male", condition: "Diabetes" },
-              { id: "P-1004", name: "Sarah Davis", age: 27, gender: "Female", condition: "Asthma" },
-              { id: "P-1005", name: "Robert Wilson", age: 62, gender: "Male", condition: "Arthritis" },
-              { id: "P-1006", name: "Jennifer Lee", age: 41, gender: "Female", condition: "Migraine" },
-            ].map((patient) => (
+            {patients.slice(0, 6).map((patient) => (
               <Card key={patient.id} className="overflow-hidden">
                 <CardHeader className="bg-[#EEEEEE] pb-2">
                   <CardTitle className="flex justify-between">
@@ -64,7 +101,12 @@ export function PatientRecordsPage() {
                     </div>
                   </div>
                   <div className="mt-4 flex gap-2">
-                    <Button variant="outline" size="sm" className="flex-1">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex-1"
+                      onClick={() => handleViewPatient(patient.id)}
+                    >
                       View
                     </Button>
                     <Button variant="outline" size="sm" className="flex-1">
@@ -74,6 +116,11 @@ export function PatientRecordsPage() {
                 </CardContent>
               </Card>
             ))}
+          </div>
+          <div className="flex justify-center">
+            <Button variant="outline" onClick={handleAdvancedSearch}>
+              View All Patients
+            </Button>
           </div>
         </TabsContent>
         <TabsContent value="inpatient" className="h-[200px] flex items-center justify-center bg-[#EEEEEE] rounded-md">

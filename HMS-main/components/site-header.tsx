@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { Bell, Menu, User, LogOut, Settings } from "lucide-react"
+import { Bell, Menu, User, LogOut, Settings, Hospital } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -32,39 +32,20 @@ export function SiteHeader() {
         </Button>
         <div className="flex items-center space-x-4">
           <Link href="/" className="flex items-center space-x-2">
+            <Hospital className="text-sidebar-foreground" size={24} />
             <span className="font-bold text-xl">CareOS</span>
           </Link>
         </div>
         <div className="flex flex-1 items-center justify-end space-x-4">
-          <nav className="hidden md:flex items-center space-x-2">
-            <Button variant="ghost" size="sm" asChild>
-              <Link href="/">Dashboard</Link>
-            </Button>
-            <Button variant="ghost" size="sm" asChild>
-              <Link href="/patients">Patients</Link>
-            </Button>
-            <Button variant="ghost" size="sm" asChild>
-              <Link href="/appointments">Appointments</Link>
-            </Button>
-            <Button variant="ghost" size="sm" asChild>
-              <Link href="/messaging">Messaging</Link>
-            </Button>
-            <Button variant="ghost" size="sm" asChild>
-              <Link href="/portal">Patient Portal</Link>
-            </Button>
-            {user?.role === "admin" && (
-              <Button variant="ghost" size="sm" asChild>
-                <Link href="/admin">Administrative</Link>
-              </Button>
-            )}
-          </nav>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="relative">
-                <Bell className="h-5 w-5" />
-                <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-[#FF8A65]" />
-                <span className="sr-only">Notifications</span>
-              </Button>
+             <Button variant="ghost" size="icon" className="relative">
+               <div className="border-2 border-white rounded-full p-1.5">
+                 <Bell className="h-5 w-5" />
+               </div>
+               <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-[#FF8A65] " />
+               <span className="sr-only">Notifications</span>
+             </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Notifications</DropdownMenuLabel>

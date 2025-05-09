@@ -4,7 +4,7 @@ import type React from "react"
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Calendar, Home, MessageSquare, Users, UserCircle, ChevronRight, Settings, Droplet } from "lucide-react"
+import { Calendar, Home, MessageSquare, Users, UserCircle, ChevronRight, Settings, Droplet , ChartSpline } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useSidebar } from "@/components/sidebar-provider"
 import { Button } from "@/components/ui/button"
@@ -53,6 +53,12 @@ export function SiteNavigation() {
       title: "Blood Bank",
       href: "/blood-bank",
       icon: Droplet,
+    },
+    {
+      title: "Analytics",
+      href: "/admin/analytics",
+      icon: ChartSpline,
+      roles: ["admin"], // Only admin can see this
     },
     {
       title: "Administrative",
